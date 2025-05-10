@@ -25,5 +25,5 @@ etkinlik_platformu/
 ├── run.py # Uygulama başlatıcı
 ├── api.py # API endpoint'leri
 ├── migrations/ # Alembic migration dosyaları
-└── venv/ # Sanal ortam (upload'a gerek yok)
+└── venv/ # Sanal ortam 
 
