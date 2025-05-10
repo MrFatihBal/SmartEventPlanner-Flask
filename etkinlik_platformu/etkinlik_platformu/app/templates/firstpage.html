@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Etkinlikler</title>
+    <style>
+/* Genel Stiller */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to right, #3498db, #8e44ad);
+    overflow-x: hidden;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to right, #3498db, #8e44ad);
+    color: white;
+    padding: 15px 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+    margin-left: 50px;
+    margin-right: 50px;
+    font-size: 1.5rem;
+}
+
+/* Butonları yan yana yerleştirmek için */
+.header-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.map-button, .menu-button {
+    background-color: #fff;
+    color: #007bff;
+    border: none;
+    padding: 10px 15px;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.map-button:hover, .menu-button:hover {
+    background-color: #f0f0f0;
+}
+
+/* Soldan Çıkan Menü */
+.side-menu {
+    position: fixed;
+    top: 0;
+    left: -300px;
+    height: 100%;
+    width: 300px;
+    background: linear-gradient(to right, #3498db, #8e44ad);
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    transition: left 0.3s ease;
+}
+
+.side-menu.open {
+    left: 0;
+}
+
+.side-menu h2 {
+    margin-top: 0;
+    font-size: 1.5rem;
+    color: #1c1c1c; /* Kömür siyahı */
+
+}
+
+.side-menu ul {
+    list-style: none;
+    padding: 0;
+    color: #1c1c1c;
+}
+
+.side-menu li {
+    color: #1c1c1c;
+    margin-bottom: 15px;
+}
+
+.side-menu a {
+    text-decoration: none;
+    color: #1c1c1c;
+    font-size: 1.1rem;
+}
+
+.side-menu a:hover {
+    color: #1c1c1c;
+}
+
+/* Etkinlik Listesi */
+.event-list {
+    margin: 20px;
+}
+
+.event-card {
+    display: flex;
+    margin: 20px auto;
+    max-width: 800px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.event-details {
+    flex-grow: 1;
+    padding: 15px;
+}
+
+.event-details h3 {
+    margin: 0;
+    color: #333;
+}
+
+.event-details p {
+    margin: 10px 0;
+    color: #666;
+}
+
+.event-details a {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: bold;
+}
+
+.event-details a:hover {
+    text-decoration: underline;
+}
+
+/* Etkinlik Oluştur Butonu */
+.create-event-button {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 15px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 20px;
+}
+
+.create-event-button:hover {
+    background-color: #218838;
+}
+
+/* Bildirim Butonu */
+.notification-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 2rem;
+    cursor: pointer;
+    z-index: 999;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Bildirim Sayısı */
+.notification-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 5px 10px;
+    font-size: 14px;
+    display: none;
+}
+
+/* Bildirim Kutusu */
+.notification-box {
+    display: none;
+    position: fixed;
+    top: 60px;
+    right: 20px;
+    width: 300px;
+    max-height: 400px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    z-index: 1000;
+}
+
+.notification-header {
+    padding: 10px;
+    background: #f5f5f5;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.notification-content {
+    padding: 10px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.notification-item {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+
+.notification-item:hover {
+    background: #f5f5f5;
+}
+
+.notification-item p {
+    margin: 0 0 5px 0;
+}
+
+.notification-item small {
+    color: #666;
+}
+
+#close-notifications {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+    </style>
+</head>
+<body>
+
+    <!-- Üst Menü -->
+    <header>
+        <h1>Etkinlikler</h1>
+        <div class="header-buttons">
+            <button class="map-button" onclick="location.href='{{ url_for('main.alleventmap') }}'">Haritayı Gör</button>
+            <button class="menu-button" onclick="toggleMenu()">Menü</button>
+            <a href="{{ url_for('main.create_event') }}">
+                <button class="create-event-button">Yeni Etkinlik Oluştur</button>
+            </a>
+        </div>
+    </header>
+
+    <!-- Soldan Çıkan Menü -->
+    <div class="side-menu">
+        <h2>Menü</h2>
+        <ul>
+            <li><a href="{{ url_for('main.profile') }}">Profil</a></li>
+            <li><a href="{{ url_for('main.chat') }}">Sohbet</a></li>
+        </ul>
+    </div>
+
+    <!-- Etkinlik Listesi -->
+    <div class="event-list">
+        {% for event in events %}
+        <div class="event-card">
+            <div class="event-details">
+                <h3>{{ event[1] }}</h3>
+                <p>{{ event[2] }}</p>
+                <a href="{{ url_for('main.map_view', event_id=event[0]) }}">Etkinliği Görüntüle</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+   
+  <!-- Bildirim butonu -->
+  <button class="notification-btn" id="notification-btn">
+    <i class="fas fa-bell"></i>
+    <span class="notification-badge" id="notification-count"></span>
+  </button>
+
+<!-- Bildirim kutusu -->
+<div class="notification-box" id="notification-box">
+    <div class="notification-header">
+        <h3>Bildirimler</h3>
+        <button id="close-notifications">&times;</button>
+    </div>
+    <div class="notification-content" id="notification-content">
+        <!-- Bildirimler buraya dinamik olarak eklenecek -->
+    </div>
+</div>
+
+<!-- Font Awesome ikonları için -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <script>
+       // Ana işlevler
+function toggleMenu() {
+    document.querySelector('.side-menu').classList.toggle('open');
+}
+
+function openChat(eventId, eventTitle) {
+    window.location.href = `/chat/${eventId}`;
+}
+
+// Bildirim sistemi
+class NotificationSystem {
+    constructor() {
+        this.notificationBox = document.getElementById('notification-box');
+        this.notificationBtn = document.getElementById('notification-btn');
+        this.notificationContent = document.getElementById('notification-content');
+        this.closeBtn = document.getElementById('close-notifications');
+        this.notificationCount = document.getElementById('notification-count');
+        
+        this.initializeEventListeners();
+        this.startAutoRefresh();
+    }
+
+    initializeEventListeners() {
+        this.notificationBtn.addEventListener('click', () => this.toggleNotifications());
+        this.closeBtn.addEventListener('click', () => this.hideNotifications());
+    }
+
+    toggleNotifications() {
+        const isHidden = this.notificationBox.style.display === 'none';
+        this.notificationBox.style.display = isHidden ? 'block' : 'none';
+        
+        if (isHidden) {
+            this.loadNotifications();
+        }
+    }
+
+    hideNotifications() {
+        this.notificationBox.style.display = 'none';
+    }
+
+    async loadNotifications() {
+        try {
+            console.log('Bildirimleri yüklemeye başlıyor...');
+            const response = await fetch('/notifications');
+            console.log('API yanıtı:', response);
+    
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            console.log('Bildirim verileri:', data);
+            
+            if (data.status === 'success') {
+                this.displayNotifications(data.notifications);
+                this.updateNotificationCount(data.notifications.length);
+            } else {
+                throw new Error('Sunucudan başarısız yanıt');
+            }
+        } catch (error) {
+            console.error('Detaylı hata:', error);
+            this.notificationContent.innerHTML = `<p>Bildirimler yüklenirken bir hata oluştu: ${error.message}</p>`;
+        }
+    }
+
+    displayNotifications(notifications) {
+        this.notificationContent.innerHTML = '';
+        
+        if (notifications.length === 0) {
+            this.notificationContent.innerHTML = '<p class="no-notifications">Hiç yeni bildiriminiz yok.</p>';
+            return;
+        }
+
+        notifications.forEach(notification => {
+            const notificationElement = this.createNotificationElement(notification);
+            this.notificationContent.appendChild(notificationElement);
+        });
+    }
+
+    createNotificationElement(notification) {
+        const element = document.createElement('div');
+        element.classList.add('notification-item');
+        
+        const timeAgo = this.getTimeAgo(new Date(notification.timestamp));
+        
+        element.innerHTML = `
+            <div class="notification-content">
+                <p class="message">${notification.message}</p>
+                <small class="timestamp">${timeAgo}</small>
+            </div>
+        `;
+
+        element.addEventListener('click', () => this.markAsRead(notification.id, element));
+        
+        return element;
+    }
+
+    async markAsRead(notificationId, element) {
+        try {
+            const response = await fetch(`/notifications/read/${notificationId}`, {
+                method: 'POST'
+            });
+            
+            if (response.ok) {
+                element.classList.add('read');
+                setTimeout(() => element.remove(), 500);
+                this.updateNotificationCount(parseInt(this.notificationCount.textContent) - 1);
+            }
+        } catch (error) {
+            console.error('Bildirim işaretlenirken hata:', error);
+        }
+    }
+
+    updateNotificationCount(count) {
+        this.notificationCount.textContent = count > 0 ? count : '';
+        this.notificationCount.style.display = count > 0 ? 'block' : 'none';
+    }
+
+    getTimeAgo(date) {
+        const now = new Date();
+        const diffInSeconds = Math.floor((now - date) / 1000);
+        
+        if (diffInSeconds < 60) return 'Az önce';
+        if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} dakika önce`;
+        if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} saat önce`;
+        return date.toLocaleDateString();
+    }
+
+    startAutoRefresh() {
+        setInterval(() => {
+            if (this.notificationBox.style.display === 'block') {
+                this.loadNotifications();
+            } else {
+                // Sadece sayıyı güncelle
+                fetch('/notifications')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            this.updateNotificationCount(data.notifications.length);
+                        }
+                    })
+                    .catch(error => console.error('Bildirim sayısı güncellenirken hata:', error));
+            }
+        }, 5000);
+    }
+}
+
+// Sayfa yüklendiğinde bildirim sistemini başlat
+document.addEventListener('DOMContentLoaded', () => {
+    const notificationSystem = new NotificationSystem();
+});
+    </script>
+
+</body>
+</html>

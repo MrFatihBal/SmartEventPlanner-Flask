@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Etkinlik Oluştur</title>
+    <style>
+        #map {
+            width: 100%;
+            height: 400px; /* Harita boyutu */
+            margin-top: 20px;
+        }
+
+        /* Checkbox'ları düzenlemek için */
+        .category-checkboxes {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr); /* 2 sütun yapar */
+            gap: 15px;
+        }
+
+        .category-checkboxes input {
+            margin-right: 5px;
+        }
+
+        .category-checkboxes label {
+            font-size: 1rem;
+        }
+
+        .coordinates {
+            font-size: 1.2rem;
+            margin-top: 10px;
+        }
+
+        .location-info {
+            margin-top: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+    </style>
+    <!-- Mapbox GL JS -->
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css" rel="stylesheet" />
+</head>
+<body>
+    <h2>Yeni Etkinlik Oluştur</h2>
+    <!-- Formu doğru şekilde POST ile gönderiyoruz -->
+    <form method="POST">
+        <label for="title">Etkinlik Adı:</label>
+        <input type="text" id="title" name="title" required><br><br>
+
+        <label for="description">Açıklama:</label>
+        <textarea id="description" name="description" required></textarea><br><br>
+
+        <label for="start_date">Başlangıç Tarihi ve Saati:</label>
+        <input type="datetime-local" id="start_date" name="start_date" required><br><br>
+
+        <label for="end_date">Bitiş Tarihi ve Saati:</label>
+        <input type="datetime-local" id="end_date" name="end_date" required><br><br>
+
+        <label for="location">Konum (Haritaya Tıklayarak Seçin):</label>
+        <span id="location-coordinates">Henüz bir konum seçilmedi.</span><br><br>
+        <div id="map"></div><br><br>
+
+        <!-- Gizli inputlar ile konum bilgilerini alıyoruz -->
+        <input type="hidden" id="location_lat" name="location_lat">
+        <input type="hidden" id="location_lon" name="location_lon">
+
+        <label for="category">İlgi Alanları:</label><br>
+        <div class="category-checkboxes">
+            {% for interest in interests %}
+                <div>
+                    <input type="checkbox" id="category" name="category" value="{{ interest[0] }}">
+                    <label for="category">{{ interest[1] }}</label>
+                </div>
+            {% endfor %}
+        </div>
+        <br><br>
+
+        <button type="submit">Oluştur</button>
+    </form>
+
+    <script>
+        mapboxgl.accessToken = "{{ mapbox_access_token }}"; // Buraya geçerli token'ınızı yazın
+        const map = new mapboxgl.Map({
+            container: 'map', // Haritanın yerleşeceği container
+            style: 'mapbox://styles/mapbox/streets-v11', // Harita stilini belirliyoruz
+            center: [28.9784, 41.0082],  // Başlangıç konumu (İstanbul)
+            zoom: 12
+        });
+
+        let marker = new mapboxgl.Marker()
+            .setLngLat([28.9784, 41.0082])  // Başlangıç olarak İstanbul'un merkezi
+            .addTo(map);
+
+        map.on('click', function(e) {
+            const lngLat = e.lngLat;
+            marker.setLngLat(lngLat);  // Marker'ı yeni tıklanan konuma taşıyoruz
+
+            // Konum bilgilerini gizli input alanlarına ekliyoruz
+            document.getElementById('location_lat').value = lngLat.lat;
+            document.getElementById('location_lon').value = lngLat.lng;
+
+            // Ekranda koordinatları gösteriyoruz
+            document.getElementById('location-coordinates').textContent = `X: ${lngLat.lng.toFixed(4)}, Y: ${lngLat.lat.toFixed(4)}`;
+        });
+    </script>
+</body>
+</html>

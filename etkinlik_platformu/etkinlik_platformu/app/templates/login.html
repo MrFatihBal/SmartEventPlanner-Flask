@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giriş Yap</title>
+    <style>
+        body {
+            background: linear-gradient(to right, #3498db, #8e44ad);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-container {
+            background-color: white;
+            padding: 3rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-container h2 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .form-label {
+            color: #2c3e50;
+        }
+
+        .form-control {
+            border-radius: 8px;
+            font-size: 1rem;
+            padding: 0.75rem;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #2c3e50;
+            font-size: 1.8rem;
+        }
+
+        form div {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #7f8c8d;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            color: #2c3e50;
+        }
+
+        input:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        .checkbox-label {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        button {
+            width: 100%;
+            padding: 0.8rem;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        .additional-links {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .additional-links a {
+            color: #3498db;
+            text-decoration: none;
+            margin: 0 0.5rem;
+        }
+
+        .additional-links a:hover {
+            text-decoration: underline;
+        }
+
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .forgot-password {
+            text-align: left;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Giriş Yap</h2>
+        <form action="{{ url_for('main.login') }}" method="post" class="form-container">
+            <!-- Giriş formu -->
+            <div>
+                <label for="username">Kullanıcı Adı:</label>
+                <input type="text" id="username" name="username" required placeholder="Kullanıcı adınızı girin">
+            </div>
+            <div>
+                <label for="password">Şifre:</label>
+                <input type="password" id="password" name="password" required placeholder="Şifrenizi girin">
+            </div>
+            <div class="forgot-password">
+                <label>
+                    <input type="checkbox" name="remember"> Beni hatırla
+                </label>
+            </div>
+            <button type="submit">Giriş Yap</button>
+        </form>
+
+        <!-- Şifremi unuttum ve kayıt ol bağlantıları -->
+        <div class="additional-links">
+            <a href="{{ url_for('main.forgot_password') }}">Şifremi Unuttum</a> | 
+            <a href="{{ url_for('main.register') }}">Kayıt Ol</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(to right, #3498db, #8e44ad);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-container {
+            background-color: white;
+            padding: 3rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-container h2 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+        .table thead {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        .card {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container profile-container">
+    <h1 class="text-center mb-4">Profil</h1>
+
+    <!-- Kullanıcı Bilgileri -->
+    <div class="card">
+        <div class="card-header">
+            <h5>Kullanıcı Bilgileri</h5>
+        </div>
+        <div class="card-body">
+            <form method="POST">
+                <div class="mb-3">
+                    <label for="first_name" class="form-label">Ad:</label>
+                    <input type="text" id="first_name" name="first_name" class="form-control" value="{{ user_info[2] }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="last_name" class="form-label">Soyad:</label>
+                    <input type="text" id="last_name" name="last_name" class="form-control" value="{{ user_info[3] }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email:</label>
+                    <input type="email" id="email" name="email" class="form-control" value="{{ user_info[1] }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Telefon:</label>
+                    <input type="text" id="phone" name="phone" class="form-control" value="{{ user_info[4] }}">
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Bilgileri Güncelle</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Kazanılan Puanlar -->
+    <div class="card">
+        <div class="card-header">
+            <h5>Kazanılan Puanlar</h5>
+        </div>
+        <div class="card-body">
+            <p><strong>Toplam Puan:</strong> {{ total_points }}</p> <!-- Toplam Puan -->
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Puan</th>
+                        <th>Neden</th>
+                        <th>Tarih</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for point in user_points %}
+                    <tr>
+                        <td>{{ point[0] }}</td>
+                        <td>{{ point[1] }}</td>
+                        <td>{{ point[2] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Katıldığı Etkinlikler -->
+    <div class="card">
+        <div class="card-header">
+            <h5>Katıldığınız Etkinlikler</h5>
+        </div>
+        <div class="card-body">
+            <ul class="list-group">
+                {% for event in joined_events %}
+                <li class="list-group-item">
+                    <strong>{{ event[0] }}</strong>
+                    <p>{{ event[1] }}</p>
+                    <small>Başlangıç: {{ event[2] }}, Bitiş: {{ event[3] }}</small>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
